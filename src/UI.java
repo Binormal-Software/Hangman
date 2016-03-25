@@ -43,6 +43,7 @@ public class UI{
 	 *           -> letterTilePane
 	 * 
 	 */
+	
 	public int inputMode;
 	private int previousDamage = 0;
 	private VBox rootPane;
@@ -51,12 +52,12 @@ public class UI{
 	private Pane characterPane[];
 	private Pane letterPane;
 	private Button messageLabel;
-	private static ArrayList<Character> lettersDrawn;
+	private ArrayList<Character> lettersDrawn;
 	private LetterAnimator pAnimator;
 	private Button[] b;
 	private boolean gameReset = false;
 	
-
+	
 	
 	public UI(){
 		
@@ -138,7 +139,7 @@ public class UI{
 			
 			int r = new Random().nextInt(b.length);
 			
-			if(letterTilePane.getChildren().contains(b[r]) && !safeLetters.contains(b[r].getText()) && !b[r].getText().equals("?")){
+			if(letterTilePane.getChildren().contains(b[r]) && !safeLetters.contains(b[r].getText().toLowerCase()) && !b[r].getText().equals("?")){
 				removeButton(r);
 			}else{
 				
@@ -249,7 +250,7 @@ public class UI{
 					}
 				});
 				ft.play();
-				System.out.println("Removing " + b[index].getText());
+				System.out.println("Removing " + b[index].getText().toLowerCase());
 			}
 		}
 	}
