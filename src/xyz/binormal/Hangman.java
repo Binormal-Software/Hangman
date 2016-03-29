@@ -1,3 +1,4 @@
+package xyz.binormal;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -12,19 +13,26 @@ import javafx.scene.SceneAntialiasing;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.stage.Stage;
-import sun.security.krb5.internal.EncAPRepPart;
 
 public class Hangman extends Application {
 
 	private static Word word;
-	private static ArrayList<Character> guessedCorrect;
-	private static ArrayList<Character> guessedIncorrect;
 	private static UI ui;
-	private static int hints;
+	
+	private static List<Character> guessedCorrect;
+	private static List<Character> guessedIncorrect;
+	
+	private static List<Word> easyWords;
+	private static List<Word> mediumWords;
+	private static List<Word> hardWords;
+	
 	private static MediaPlayer yes;
 	private static MediaPlayer no;
 	private static MediaPlayer victory;
 	private static MediaPlayer loss;
+	
+	private static String difficulty;
+	
 	
 	@Override 
 	public void start(Stage primaryStage) {   
@@ -33,7 +41,6 @@ public class Hangman extends Application {
 		startScene(primaryStage);
 
 	}
-	
 	
 	public static void main(String[] args) {
 		launch(args);
@@ -74,11 +81,11 @@ public class Hangman extends Application {
 					
 					
 					if (guess.equals("e"))
-						hints = 2;
+						difficulty = "EASY";
 					else if (guess.equals("m"))
-						hints = 1;
+						difficulty = "MEDIUM";
 					else 
-						hints = 0;
+						difficulty = "HARD";
 					
 					yes.play();
 					initializeGame();
@@ -129,7 +136,7 @@ public class Hangman extends Application {
 		ui = new UI();
 
 		ui.initialize("", toArraylist(""), 0);
-		ui.refresh("HANGMAN  by Ryan Rodriguez", toArraylist("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"), 6);
+		ui.refresh("hangman!  by ryan rodriguez", toArraylist("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz!"), 6);
 		ui.askQuestion("Welcome to Hangman! Select difficulty:", "emh".toCharArray());
 		ui.inputMode = 2;
 		
@@ -160,13 +167,13 @@ public class Hangman extends Application {
 	}
 	
 	private static void initializeGame(){
-
-		word = selectWord(hints);
+		
+		word = selectWord(numberOfHints(difficulty));
 		
 		guessedIncorrect = new ArrayList<Character>();
 		guessedCorrect = new ArrayList<Character>();
 
-		ui.initialize(word.getText(), guessedCorrect, hints);
+		ui.initialize(word.getText(), guessedCorrect, numberOfHints(difficulty));
 		System.out.println("Game initialized");
 
 	}
@@ -198,131 +205,57 @@ public class Hangman extends Application {
 		}
 	}
 	
-	private static Word selectWord(int difficulty){ // <= 1 is hard; > 2 is easy
+	private static List<Word> loadWords(String filePath, String tagName){
 
-		int index;
-		boolean allWordsPlayed;
 		List<String> allWords;
-		
+
 		try {
-			allWords = Files.readAllLines(Paths.get("./res/dictionary.txt"));
-			
+			allWords = Files.readAllLines(Paths.get(filePath));
+
 		} catch (IOException e) {
-			System.err.println("Error loading words!!!");
+			System.err.println("Error loading words!");
 			allWords = new ArrayList<String>();
-			allWords.addAll(Arrays.asList("<EASY>", "error", "</EASY>", "<HARD>", "errorr", "</HARD>"));
+			allWords.addAll(Arrays.asList("<" + tagName + ">", "error", "</" + tagName + ">"));
+		}
+
+		int[] listIndex = {allWords.indexOf("<" + tagName + ">"), allWords.indexOf("</" + tagName + ">")};
+		List<Word> returnWords = new ArrayList<Word>(); 
+
+		for(int i = listIndex[0] + 1; i < listIndex[1]; i++){
+			returnWords.add(new Word(allWords.get(i).trim()));
 		}
 		
-		int[] easyIndex = {allWords.indexOf("<EASY>"), allWords.indexOf("</EASY>")};
-		int[] hardIndex = {allWords.indexOf("<HARD>"), allWords.indexOf("</HARD>")};
+		return returnWords;
 		
-		List<Word> easyWords = new ArrayList<Word>();
-		List<Word> hardWords = new ArrayList<Word>(); 
+	}
+	
+	private static Word selectWord(int hints){ // (Difficulty) <= 1 is hard; > 2 is easy
+
+		if(easyWords==null || easyWords.isEmpty())
+			easyWords = new ArrayList<Word>(loadWords("./res/dictionary.txt", "EASY"));
 		
-		for(String s: allWords){
-			System.out.println(s);
+		if(mediumWords==null || mediumWords.isEmpty())
+			mediumWords = new ArrayList<Word>(loadWords("./res/dictionary.txt", "MEDIUM"));
+		
+		if(hardWords==null || hardWords.isEmpty())
+			hardWords = new ArrayList<Word>(loadWords("./res/dictionary.txt", "HARD"));
+		
+		List<Word> wordPool = new ArrayList<Word>();
+		
+		switch(hints){
+		
+		case 0: wordPool = hardWords; break;
+		case 1: wordPool = mediumWords; break;
+		case 2: wordPool = easyWords; break;
+
 		}
 		
-		for(int i = easyIndex[0] + 1; i < easyIndex[1]; i++){
-			System.out.println("loading easy word " + i);
-			easyWords.add(new Word(allWords.get(i).trim()));
+		
+		int random = (int) (Math.random() * wordPool.size());
+		Word newWord = wordPool.get(random);
+		wordPool.remove(random);
 			
-		}
-		System.out.println(allWords.lastIndexOf("</HARD>"));
-		
-		for(int i = hardIndex[0] + 1; i < hardIndex[1]; i++){
-			System.out.println("loading hard word " + i);
-			hardWords.add(new Word(allWords.get(i).trim()));
-			
-		}
-		
-		
-		/*String[] hardWords = { // NO CHEATING!!!!!!!!!!!!!!!!!!!!!
-				"auxiliary",
-				"buzzing wire",
-				"coaxial",
-				"cryptic",
-				"russian czar",
-				"feel the rhythm",
-				"fizzy soda",
-				"fuchsia",
-				"gypsy wagon",
-				"phlegm",
-				"psychic squid",
-				"relaxing jazz",
-				"six megahertz",
-				"syntax error",
-				"valkyrie",
-				"water nymph",
-				"zephyrus"
-		};
-		
-		String[] easyWords = {
-				"comic sans is lame",
-				"computers rock",
-				"fat cats eat rats",
-				"flummoxing filibuster",
-				"jump on the bandwagon",
-				"microsoft windows",
-				"null pointer exception",
-				"twenty one gun salute",
-		};*/
-		
-		
-		//TODO word used
-		
-		
-		/*allWordsPlayed = true;
-		for(int i = 0; i < hardWords.length; i++){
-			if(wordPlayed[i]==false){
-				allWordsPlayed = false;
-				break;
-			}
-		}
-		if(allWordsPlayed){
-			System.out.println("All hard words played. Resetting.");
-			for(int i = 0; i < hardWords.length; i++){
-				wordPlayed[i] = false;
-			}
-		}
-		
-		
-		allWordsPlayed = true;
-		for(int i = hardWords.length; i < (hardWords.length + easyWords.length); i++){
-			//
-			if(wordPlayed[i]==false){
-				allWordsPlayed = false;
-				break;
-			}
-		}
-		if(allWordsPlayed){
-			System.out.println("All easy words played. Resetting.");
-			for(int i = hardWords.length; i < (hardWords.length + easyWords.length); i++){
-				wordPlayed[i] = false;
-			}
-		}*/
-		
-		
-		if (difficulty <= 1){
-			
-			//do {
-				index = (int) (Math.random() * hardWords.size());
-			//}
-			//while (wordPlayed[index]);
-			
-			//wordPlayed[index] = true;
-			return hardWords.get(index);
-			
-		}else{
-			
-			//do {
-				index = (int) (Math.random() * easyWords.size());
-			//}
-			//while (wordPlayed[index + hardWords.length]);
-			
-			//wordPlayed[index + hardWords.length] = true;
-			return easyWords.get(index);
-		}
+		return newWord;
 			
 	}
 	
@@ -337,5 +270,18 @@ public class Hangman extends Application {
 		
 	}
 	
+	private static int numberOfHints(String difficulty){
+		
+		switch (difficulty){
+		
+		case "EASY": return 2;
+		case "MEDIUM": return 1;
+		case "HARD": return 0;
+		default: return 0;
+		
+		
+		
+		}
+	}
 
 }

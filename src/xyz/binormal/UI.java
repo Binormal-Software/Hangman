@@ -1,7 +1,9 @@
+package xyz.binormal;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 import javafx.animation.FadeTransition;
@@ -76,9 +78,9 @@ public class UI{
 		return rootPane;
 	}
 	
-	public void initialize(String word, ArrayList<Character> guessedCorrect, int hints){
+	public void initialize(String word, List<Character> guessedCorrect, int hints){
 		
-		String tiles = "abcdefghijklmnopqrstuvwxyz";
+		String tiles = "abcdefghijklmnopqrstuvwxyz!";
 		for(int i = 0; i < hints; i++)
 			tiles += "?";
 		
@@ -125,7 +127,7 @@ public class UI{
 		
 	}
 	
-	public void refresh(String word, ArrayList<Character> guessedCorrect, int howDead){
+	public void refresh(String word, List<Character> guessedCorrect, int howDead){
 		
 		drawCharacter(howDead);
 		drawWordArea(word, guessedCorrect);
@@ -164,8 +166,7 @@ public class UI{
 		
 	}
 	
-	@SuppressWarnings("unchecked")
-	private void drawWordArea(String word, ArrayList<Character> guessedCorrect){
+	private void drawWordArea(String word, List<Character> guessedCorrect){
 		
 		String wordArea = "";
 		String letterSlide = "";
@@ -189,7 +190,7 @@ public class UI{
 			}
 		}
 		
-		lettersDrawn = (ArrayList<Character>) guessedCorrect.clone();
+		lettersDrawn = new ArrayList<Character>(guessedCorrect);
 		
 		Text textArea = (Text) hangmanPane.lookup("#wordArea");
 		textArea.setText(wordArea);

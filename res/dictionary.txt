@@ -8,6 +8,10 @@
 	null pointer exception
 	twenty one gun salute
 </EASY>
+<MEDIUM>
+	relaxing jazz
+	syntax error
+</MEDIUM>
 <HARD>
 	auxiliary
 	buzzing wire
@@ -20,9 +24,7 @@
 	gypsy wagon
 	phlegm
 	psychic squid
-	relaxing jazz
 	six megahertz
-	syntax error
 	valkyrie
 	water nymph
 	zephyrus

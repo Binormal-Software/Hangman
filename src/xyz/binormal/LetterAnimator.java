@@ -1,3 +1,4 @@
+package xyz.binormal;
 import javafx.animation.Interpolator;
 import javafx.animation.TranslateTransition;
 import javafx.beans.property.DoubleProperty;
@@ -106,6 +107,7 @@ public class LetterAnimator implements ChangeListener<Number>, ListChangeListene
 		t.playFromStart();
 	}
 
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
 	public void onChanged(Change change) {
 		
