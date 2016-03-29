@@ -1,4 +1,5 @@
 <EASY>
+	baked beans
 	comic sans is lame
 	computers rock
 	fat cats eat rats
@@ -9,18 +10,22 @@
 	twenty one gun salute
 </EASY>
 <MEDIUM>
+	buzzing wire
+	dark abyss
+	feel the rhythm
+	fizzy soda
+	poison ivy
 	relaxing jazz
+	russian czar
 	syntax error
+	swimming pool
 </MEDIUM>
 <HARD>
 	auxiliary
-	buzzing wire
 	coaxial
 	cryptic
-	russian czar
-	feel the rhythm
-	fizzy soda
 	fuchsia
+	gnat
 	gypsy wagon
 	phlegm
 	psychic squid
