@@ -13,7 +13,7 @@ public class Word {
 		return this.word;
 	}
 	
-	public ArrayList<Character> getCharacter(){
+	public ArrayList<Character> getCharacters(){
 		ArrayList<Character> chars = new ArrayList<Character>();
 		for (char c : word.toCharArray()) {
 		  chars.add(c);
@@ -21,4 +21,11 @@ public class Word {
 		return chars;
 	}
 	
+	public Character getCharacter(int index){
+		return this.word.charAt(index);
+	}
+	
+	public int wordLength(){
+		return this.word.length();
+	}
 }

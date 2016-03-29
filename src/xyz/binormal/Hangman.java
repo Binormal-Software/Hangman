@@ -36,15 +36,12 @@ public class Hangman extends Application {
 	
 	@Override 
 	public void start(Stage primaryStage) {   
-		
 		loadUI();
 		startScene(primaryStage);
-
 	}
 	
 	public static void main(String[] args) {
 		launch(args);
-
 	}
 	
 	
@@ -99,7 +96,7 @@ public class Hangman extends Application {
 						
 					}else if(guess.contains("!")){
 							
-						guessedCorrect.addAll(word.getCharacter());
+						guessedCorrect.addAll(word.getCharacters());
 						yes.play();
 						
 					}else{
@@ -125,7 +122,7 @@ public class Hangman extends Application {
 		}
 
 		System.out.println(msg);
-		ui.refresh(word.getText(), guessedCorrect, guessedIncorrect.size());
+		ui.refresh(word, guessedCorrect, guessedIncorrect.size());
 		updateGame();
 
 	}
@@ -135,8 +132,8 @@ public class Hangman extends Application {
 		
 		ui = new UI();
 
-		ui.initialize("", toArraylist(""), 0);
-		ui.refresh("hangman!  by ryan rodriguez", toArraylist("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz!"), 6);
+		ui.initialize(new Word(""), toArraylist(""), 0);
+		ui.refresh(new Word("hangman!  by ryan rodriguez"), toArraylist("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz!"), 6);
 		ui.askQuestion("Welcome to Hangman! Select difficulty:", "emh".toCharArray());
 		ui.inputMode = 2;
 		
@@ -168,12 +165,12 @@ public class Hangman extends Application {
 	
 	private static void initializeGame(){
 		
-		word = selectWord(numberOfHints(difficulty));
+		word = selectWord(difficulty);
 		
 		guessedIncorrect = new ArrayList<Character>();
 		guessedCorrect = new ArrayList<Character>();
 
-		ui.initialize(word.getText(), guessedCorrect, numberOfHints(difficulty));
+		ui.initialize(word, guessedCorrect, numberOfHints(difficulty));
 		System.out.println("Game initialized");
 
 	}
@@ -229,7 +226,7 @@ public class Hangman extends Application {
 		
 	}
 	
-	private static Word selectWord(int hints){ // (Difficulty) <= 1 is hard; > 2 is easy
+	private static Word selectWord(String difficulty){
 
 		if(easyWords==null || easyWords.isEmpty())
 			easyWords = new ArrayList<Word>(loadWords("./res/dictionary.txt", "EASY"));
@@ -242,11 +239,11 @@ public class Hangman extends Application {
 		
 		List<Word> wordPool = new ArrayList<Word>();
 		
-		switch(hints){
+		switch(difficulty){
 		
-		case 0: wordPool = hardWords; break;
-		case 1: wordPool = mediumWords; break;
-		case 2: wordPool = easyWords; break;
+		case "HARD": wordPool = hardWords; break;
+		case "MEDIUM": wordPool = mediumWords; break;
+		case "EASY": wordPool = easyWords; break;
 
 		}
 		

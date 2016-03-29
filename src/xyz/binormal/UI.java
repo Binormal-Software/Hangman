@@ -5,9 +5,9 @@ import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-
 import javafx.animation.FadeTransition;
-import javafx.animation.PathTransition;
+import javafx.animation.Interpolator;
+import javafx.animation.TranslateTransition;
 import javafx.geometry.Insets;
 import javafx.geometry.Point2D;
 import javafx.geometry.Pos;
@@ -25,7 +25,6 @@ import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.CubicCurveTo;
 import javafx.scene.shape.Line;
-import javafx.scene.shape.LineTo;
 import javafx.scene.shape.MoveTo;
 import javafx.scene.shape.Path;
 import javafx.scene.shape.Rectangle;
@@ -43,7 +42,6 @@ public class UI{
 	/*           ->             -> letterPane    ->
 	 *  rootPane -> hangmanPane -> characterPane -> bodyPane
 	 *           -> letterTilePane
-	 * 
 	 */
 	
 	public int inputMode;
@@ -54,7 +52,7 @@ public class UI{
 	private Pane characterPane[];
 	private Pane letterPane;
 	private Button messageLabel;
-	private ArrayList<Character> lettersDrawn;
+	private List<Character> lettersDrawn;
 	private LetterAnimator pAnimator;
 	private Button[] b;
 	private boolean gameReset = false;
@@ -78,9 +76,9 @@ public class UI{
 		return rootPane;
 	}
 	
-	public void initialize(String word, List<Character> guessedCorrect, int hints){
+	public void initialize(Word word, List<Character> guessedCorrect, int hints){
 		
-		String tiles = "abcdefghijklmnopqrstuvwxyz!";
+		String tiles = "abcdefghijklmnopqrstuvwxyz";
 		for(int i = 0; i < hints; i++)
 			tiles += "?";
 		
@@ -127,7 +125,7 @@ public class UI{
 		
 	}
 	
-	public void refresh(String word, List<Character> guessedCorrect, int howDead){
+	public void refresh(Word word, List<Character> guessedCorrect, int howDead){
 		
 		drawCharacter(howDead);
 		drawWordArea(word, guessedCorrect);
@@ -166,23 +164,23 @@ public class UI{
 		
 	}
 	
-	private void drawWordArea(String word, List<Character> guessedCorrect){
+	private void drawWordArea(Word word, List<Character> guessedCorrect){
 		
 		String wordArea = "";
 		String letterSlide = "";
 		Pane slidePane = new Pane();
 		slidePane.setStyle("-fx-background-color: #ff000000;");
 		
-		for (int i = 0; i < word.length(); i++){
+		for (int i = 0; i < word.wordLength(); i++){
 
-			if(word.toCharArray()[i] == ' '){
+			if(word.getCharacter(i) == ' '){
 				wordArea += "\r\n";
 				letterSlide += "\r\n";
 			}else{
-				if(guessedCorrect.contains(word.toCharArray()[i]) && !lettersDrawn.contains(word.toCharArray()[i])){
+				if(guessedCorrect.contains(word.getCharacter(i)) && !lettersDrawn.contains(word.getCharacter(i))){
 					//wordArea += ("" + word.toCharArray()[i] + " ");
 					wordArea += "_ ";
-					letterSlide += ("" + word.toCharArray()[i] + " ");
+					letterSlide += ("" + word.getCharacter(i) + " ");
 				}else{
 					wordArea += "_ ";
 					letterSlide += "  ";
@@ -196,19 +194,15 @@ public class UI{
 		textArea.setText(wordArea);
 		
 		Text letter = coolText(0,22,letterSlide);//230 100
-		slidePane.translateYProperty().set(-1000);
+		slidePane.setTranslateX(300);
 		
-		Path path = new Path();
-		path.getElements().add (new MoveTo ((300) + (letter.getLayoutBounds().getWidth()/2), -300));
-		path.getElements().add (new LineTo((300) + (letter.getLayoutBounds().getWidth()/2), ((60) + (letter.getLayoutBounds().getHeight()/2))));
-		
-		PathTransition pathTransition = new PathTransition();
-		pathTransition.setDuration(Duration.millis(500));
-		pathTransition.setNode(slidePane);
-		pathTransition.setPath(path);
-		pathTransition.setInterpolator(javafx.animation.Interpolator.EASE_OUT);
-		
-		pathTransition.play();
+		TranslateTransition translateTransition = new TranslateTransition();
+		translateTransition.setFromY(-300);
+		translateTransition.setToY(60);
+		translateTransition.setNode(slidePane);
+		translateTransition.setDuration(Duration.millis(300));
+		translateTransition.setInterpolator(Interpolator.EASE_OUT);
+		translateTransition.play();
 		
 		slidePane.getChildren().add(letter);
 		letterPane.getChildren().add(slidePane);
