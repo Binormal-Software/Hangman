@@ -1,7 +1,7 @@
 package xyz.binormal;
 import java.util.ArrayList;
 
-public class Word {
+public class Word { // custom class for word. Why? Because, that's why.
 
 	private String word;
 	
@@ -28,4 +28,5 @@ public class Word {
 	public int wordLength(){
 		return this.word.length();
 	}
+
 }

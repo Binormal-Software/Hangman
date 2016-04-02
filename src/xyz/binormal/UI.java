@@ -59,7 +59,7 @@ public class UI{
 	
 	
 	
-	public UI(){
+	public UI(){ // ui constructor
 		
 		lettersDrawn = new ArrayList<Character>();
 		
@@ -76,7 +76,7 @@ public class UI{
 		return rootPane;
 	}
 	
-	public void initialize(Word word, List<Character> guessedCorrect, int hints){
+	public void initialize(Word word, List<Character> guessedCorrect, int hints){ // create ui
 		
 		String tiles = "abcdefghijklmnopqrstuvwxyz";
 		for(int i = 0; i < hints; i++)
@@ -116,7 +116,7 @@ public class UI{
 		
 	}
 
-	public void askQuestion(String msg, char[] c){
+	public void askQuestion(String msg, char[] c){ // print question with appropriate options
 		
 		rootPane.getChildren().remove(letterTilePane);
 		letterTilePane = selectionPane(c);
@@ -125,14 +125,14 @@ public class UI{
 		
 	}
 	
-	public void refresh(Word word, List<Character> guessedCorrect, int howDead){
+	public void refresh(Word word, List<Character> guessedCorrect, int howDead){ // redraw ui after guess
 		
 		drawCharacter(howDead);
 		drawWordArea(word, guessedCorrect);
 		
 	}
 	
-	public void hint(String safeLetters){
+	public void hint(String safeLetters){ // remove some letters
 		
 		int j = 0;
 		for(int i = 0; i < 10; i++){
@@ -164,14 +164,14 @@ public class UI{
 		
 	}
 	
-	private void drawWordArea(Word word, List<Character> guessedCorrect){
+	private void drawWordArea(Word word, List<Character> guessedCorrect){ // draw blanks for word and fill in
 		
 		String wordArea = "";
 		String letterSlide = "";
 		Pane slidePane = new Pane();
 		slidePane.setStyle("-fx-background-color: #ff000000;");
 		
-		for (int i = 0; i < word.wordLength(); i++){
+		for (int i = 0; i < word.wordLength(); i++){ // read in each letter
 
 			if(word.getCharacter(i) == ' '){
 				wordArea += "\r\n";
@@ -196,7 +196,7 @@ public class UI{
 		Text letter = coolText(0,22,letterSlide);//230 100
 		slidePane.setTranslateX(300);
 		
-		TranslateTransition translateTransition = new TranslateTransition();
+		TranslateTransition translateTransition = new TranslateTransition(); // transitions
 		translateTransition.setFromY(-300);
 		translateTransition.setToY(60);
 		translateTransition.setNode(slidePane);
@@ -210,7 +210,7 @@ public class UI{
 		
 	}
 
-	private void drawCharacter(int howDead){
+	private void drawCharacter(int howDead){ // draw body parts
 
 		for(int i = (previousDamage+1); i < (howDead+1); i++){
 
@@ -236,7 +236,7 @@ public class UI{
 				
 				gameReset = false;
 				
-				FadeTransition ft = new FadeTransition(Duration.millis(300), b[index]);
+				FadeTransition ft = new FadeTransition(Duration.millis(300), b[index]); // fancy transitions everywhere!!
 				ft.setFromValue(1.0);
 				ft.setToValue(0.0);
 				ft.setOnFinished(e -> {
@@ -250,6 +250,7 @@ public class UI{
 		}
 	}
 	
+	// formats for individual elements, too lazy for css ----->
 	
 	final private Pane characterPart(int partType){
 

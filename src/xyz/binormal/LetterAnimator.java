@@ -24,6 +24,7 @@ public class LetterAnimator implements ChangeListener<Number>, ListChangeListene
 	*  used examples from javaFX documentation and stackoverflow to get it working
 	*/
 	
+	// add animation
 	public void addAnimation(ObservableList<Node> nodes) {
 		
 		for (Node node : nodes) {
@@ -54,7 +55,7 @@ public class LetterAnimator implements ChangeListener<Number>, ListChangeListene
 	
 	
 	
-	
+	// dispose of animation
 	public void removeAnimation(ObservableList<Node> nodes) {
 		
 		nodes.removeListener(this);
@@ -70,9 +71,9 @@ public class LetterAnimator implements ChangeListener<Number>, ListChangeListene
 
 	
 	
-	
+	// javaFX hooks
 	@Override
-	public void changed(ObservableValue<? extends Number> ov, Number oldValue, Number newValue) {
+	public void changed(ObservableValue<? extends Number> ov, Number oldValue, Number newValue) { // hook into javaFX to detect layout changes
 		
 		final double delta = newValue.doubleValue() - oldValue.doubleValue();
 		final DoubleProperty doubleProperty = (DoubleProperty) ov;
@@ -107,7 +108,7 @@ public class LetterAnimator implements ChangeListener<Number>, ListChangeListene
 		t.playFromStart();
 	}
 
-	@SuppressWarnings({ "unchecked", "rawtypes" })
+	@SuppressWarnings({ "unchecked", "rawtypes" }) // dumb eclipse
 	@Override
 	public void onChanged(Change change) {
 		

@@ -15,7 +15,9 @@ import javafx.scene.media.MediaPlayer;
 import javafx.stage.Stage;
 
 public class Hangman extends Application {
-
+	
+	// global vars
+	
 	private static Word word;
 	private static UI ui;
 	
@@ -45,7 +47,7 @@ public class Hangman extends Application {
 	}
 	
 	
-	protected static void checkInput(String userInput){
+	protected static void checkInput(String userInput){ // global function called to check if letter is valid
 
 		String msg = "";
 		yes.stop();
@@ -59,7 +61,7 @@ public class Hangman extends Application {
 
 			if (!guess.equals(" ")){
 
-				if(ui.inputMode == 1){
+				if(ui.inputMode == 1){ // play again dialogue
 
 					if (guess.contains("y")){ // ask difficulty
 						
@@ -74,7 +76,7 @@ public class Hangman extends Application {
 						msg = "Type y or n!";
 					}
 
-				}else if (ui.inputMode == 2){
+				}else if (ui.inputMode == 2){ // ask difficulty dialogue 
 					
 					
 					if (guess.equals("e"))
@@ -89,12 +91,12 @@ public class Hangman extends Application {
 					
 				}else{
 
-					if(guess.contains("?")){
+					if(guess.contains("?")){ // remove some letters
 						
 						ui.hint(word.getText());
 						yes.play();
 						
-					}else if(guess.contains("!")){
+					}else if(guess.contains("!")){ // instant solve, for debugging
 							
 						guessedCorrect.addAll(word.getCharacters());
 						yes.play();
@@ -128,7 +130,7 @@ public class Hangman extends Application {
 	}
 	
 	
-	private static void loadUI(){
+	private static void loadUI(){ // load ux elements, graphics and sounds
 		
 		ui = new UI();
 
@@ -152,7 +154,7 @@ public class Hangman extends Application {
 				
 	}
 	
-	private static void startScene(Stage primaryStage){
+	private static void startScene(Stage primaryStage){ // start javafx window
 
 		Scene hangmanScene = new Scene(ui.uiPane(), 10, 10, false, SceneAntialiasing.BALANCED);
 		primaryStage.setMinHeight(693);
@@ -163,7 +165,7 @@ public class Hangman extends Application {
 
 	}
 	
-	private static void initializeGame(){
+	private static void initializeGame(){ // select new word and start game
 		
 		word = selectWord(difficulty);
 		
@@ -175,17 +177,17 @@ public class Hangman extends Application {
 
 	}
 	
-	private static void updateGame(){
+	private static void updateGame(){ // check if game is over
 
-		if(ui.inputMode == 0){
+		if(ui.inputMode == 0){ // main game loop
 			int lettersGuessed = 0;
 
 			for(int i = 0; i < word.getText().length(); i++){
-				if (guessedCorrect.contains(word.getText().charAt(i))){
+				if (guessedCorrect.contains(word.getText().charAt(i))){ // update correct
 					lettersGuessed++;
 				}
 			}
-			if (lettersGuessed >= word.getText().replaceAll("\\s","").length()){
+			if (lettersGuessed >= word.getText().replaceAll("\\s","").length()){ // you win
 				victory.play();
 				System.out.println("You won!");
 				ui.askQuestion("You won! Play again?", "yn".toCharArray());
@@ -193,7 +195,7 @@ public class Hangman extends Application {
 			}
 
 
-			if (guessedIncorrect.size() >= 6){
+			if (guessedIncorrect.size() >= 6){ // you lose
 				loss.play();
 				System.out.println("You lose!");
 				ui.askQuestion("You lose... Play again?", "yn".toCharArray());
@@ -202,23 +204,23 @@ public class Hangman extends Application {
 		}
 	}
 	
-	private static List<Word> loadWords(String filePath, String tagName){
+	private static List<Word> loadWords(String filePath, String tagName){ // load list of words from dictionary file
 
 		List<String> allWords;
 
 		try {
-			allWords = Files.readAllLines(Paths.get(filePath));
+			allWords = Files.readAllLines(Paths.get(filePath)); // read from filePath arg
 
 		} catch (IOException e) {
 			System.err.println("Error loading words!");
 			allWords = new ArrayList<String>();
-			allWords.addAll(Arrays.asList("<" + tagName + ">", "error", "</" + tagName + ">"));
+			allWords.addAll(Arrays.asList("<" + tagName + ">", "error", "</" + tagName + ">")); // hehe
 		}
 
-		int[] listIndex = {allWords.indexOf("<" + tagName + ">"), allWords.indexOf("</" + tagName + ">")};
+		int[] listIndex = {allWords.indexOf("<" + tagName + ">"), allWords.indexOf("</" + tagName + ">")}; // get index of beginning and closing tags
 		List<Word> returnWords = new ArrayList<Word>(); 
 
-		for(int i = listIndex[0] + 1; i < listIndex[1]; i++){
+		for(int i = listIndex[0] + 1; i < listIndex[1]; i++){ // read in each string between tags
 			returnWords.add(new Word(allWords.get(i).trim()));
 		}
 		
@@ -226,10 +228,10 @@ public class Hangman extends Application {
 		
 	}
 	
-	private static Word selectWord(String difficulty){
+	private static Word selectWord(String difficulty){ // select word from loaded list
 
 		if(easyWords==null || easyWords.isEmpty())
-			easyWords = new ArrayList<Word>(loadWords("./res/dictionary.txt", "EASY"));
+			easyWords = new ArrayList<Word>(loadWords("./res/dictionary.txt", "EASY")); // load all words, ...
 		
 		if(mediumWords==null || mediumWords.isEmpty())
 			mediumWords = new ArrayList<Word>(loadWords("./res/dictionary.txt", "MEDIUM"));
@@ -248,7 +250,7 @@ public class Hangman extends Application {
 		}
 		
 		
-		int random = (int) (Math.random() * wordPool.size());
+		int random = (int) (Math.random() * wordPool.size()); // randomly select word
 		Word newWord = wordPool.get(random);
 		wordPool.remove(random);
 			
@@ -256,7 +258,7 @@ public class Hangman extends Application {
 			
 	}
 	
-	private static ArrayList<Character> toArraylist(String input){
+	private static ArrayList<Character> toArraylist(String input){ // shortcut to convert to arraylist
 		
 		ArrayList<Character> chars = new ArrayList<Character>();
 		for (char c : input.toCharArray()) {
@@ -267,7 +269,7 @@ public class Hangman extends Application {
 		
 	}
 	
-	private static int numberOfHints(String difficulty){
+	private static int numberOfHints(String difficulty){ // quick conversion
 		
 		switch (difficulty){
 		
