@@ -496,13 +496,11 @@ public class UI{
 		text.setEffect(dropShadow());
 		text.setCache(true);
 		
-		try
-	    { 
-	      final Font f = Font.loadFont(new FileInputStream(new File("./res/Targa.Hand.ttf")), 40);
+		try {
+	      final Font f = Font.loadFont(Hangman.class.getClassLoader().getResource("Targa.Hand.ttf").toURI().toString(), 40);
 	      text.setFont(f); 
 	    }
-	    catch (FileNotFoundException e)
-	    {
+	    catch (Exception e) {
 	      System.err.println("Unable to find font, loading plain type.");
 	      e.printStackTrace();
 	      text.setFont(Font.font(java.awt.Font.MONOSPACED,FontWeight.SEMI_BOLD,40));

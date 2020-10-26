@@ -2,6 +2,7 @@ package xyz.binormal;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -130,7 +131,7 @@ public class Hangman extends Application {
 	}
 	
 	
-	private static void loadUI(){ // load ux elements, graphics and sounds
+	private static void loadUI () { // load ux elements, graphics and sounds
 		
 		ui = new UI();
 
@@ -139,18 +140,24 @@ public class Hangman extends Application {
 		ui.askQuestion("Welcome to Hangman! Select difficulty:", "emh".toCharArray());
 		ui.inputMode = 2;
 		
-		Media yesSound = new Media(new File("./res/yes.wav").toURI().toString());
-		yes = new MediaPlayer(yesSound);
-		yes.setVolume(0.15);
-		Media noSound = new Media(new File("./res/no.wav").toURI().toString());
-		no = new MediaPlayer(noSound);
-		no.setVolume(0.2);
-		Media victorySound = new Media(new File("./res/victory.wav").toURI().toString());
-		victory = new MediaPlayer(victorySound);
-		victory.setVolume(0.2);
-		Media lossSound = new Media(new File("./res/loss.wav").toURI().toString());
-		loss = new MediaPlayer(lossSound);
-		loss.setVolume(0.2);
+		try {
+			
+			Media yesSound = new Media(Hangman.class.getClassLoader().getResource("yes.wav").toURI().toString());
+			yes = new MediaPlayer(yesSound);
+			yes.setVolume(0.15);
+			Media noSound = new Media(Hangman.class.getClassLoader().getResource("no.wav").toURI().toString());
+			no = new MediaPlayer(noSound);
+			no.setVolume(0.2);
+			Media victorySound = new Media(Hangman.class.getClassLoader().getResource("victory.wav").toURI().toString());
+			victory = new MediaPlayer(victorySound);
+			victory.setVolume(0.2);
+			Media lossSound = new Media(Hangman.class.getClassLoader().getResource("loss.wav").toURI().toString());
+			loss = new MediaPlayer(lossSound);
+			loss.setVolume(0.2);
+
+		} catch (Exception e) {
+			System.err.println(e.getMessage());
+		}
 				
 	}
 	
@@ -204,15 +211,15 @@ public class Hangman extends Application {
 		}
 	}
 	
-	private static List<Word> loadWords(String filePath, String tagName){ // load list of words from dictionary file
+	private static List<Word> loadWords(String tagName){ // load list of words from dictionary file
 
 		List<String> allWords;
 
 		try {
-			allWords = Files.readAllLines(Paths.get(filePath)); // read from filePath arg
-
-		} catch (IOException e) {
+			allWords = Files.readAllLines(Paths.get(Hangman.class.getClassLoader().getResource("dictionary.txt").getPath()));
+		} catch (Exception e) {
 			System.err.println("Error loading words!");
+			e.printStackTrace();
 			allWords = new ArrayList<String>();
 			allWords.addAll(Arrays.asList("<" + tagName + ">", "error", "</" + tagName + ">")); // hehe
 		}
@@ -231,13 +238,13 @@ public class Hangman extends Application {
 	private static Word selectWord(String difficulty){ // select word from loaded list
 
 		if(easyWords==null || easyWords.isEmpty())
-			easyWords = new ArrayList<Word>(loadWords("./res/dictionary.txt", "EASY")); // load all words, ...
+			easyWords = new ArrayList<Word>(loadWords("EASY")); // load all words, ...
 		
 		if(mediumWords==null || mediumWords.isEmpty())
-			mediumWords = new ArrayList<Word>(loadWords("./res/dictionary.txt", "MEDIUM"));
+			mediumWords = new ArrayList<Word>(loadWords("MEDIUM"));
 		
 		if(hardWords==null || hardWords.isEmpty())
-			hardWords = new ArrayList<Word>(loadWords("./res/dictionary.txt", "HARD"));
+			hardWords = new ArrayList<Word>(loadWords("HARD"));
 		
 		List<Word> wordPool = new ArrayList<Word>();
 		

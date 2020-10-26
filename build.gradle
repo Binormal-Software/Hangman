@@ -1,0 +1,35 @@
+plugins {
+    id 'java'
+    id 'application'
+    id 'org.openjfx.javafxplugin' version '0.0.9'
+    id 'org.beryx.jlink' version '2.22.0'
+}
+
+javafx {
+    version = "15"
+    modules = [ 'javafx.controls', 'javafx.media']
+}
+
+version = '20.01'
+group = 'xyz.binormal.Hangman'
+tasks.withType(JavaCompile) { options.encoding = 'UTF-8' }
+java { modularity.inferModulePath = true }
+modularity.disableEffectiveArgumentsAdjustment()
+
+// Target Java version
+sourceCompatibility = 1.11
+
+repositories {
+    jcenter()
+}
+
+jlink {
+    launcher {
+        name = 'Hangman'
+    }
+}
+
+application {
+    mainModule = 'xyz.binormal.hangman'
+    mainClass = 'xyz.binormal.Hangman'
+}
